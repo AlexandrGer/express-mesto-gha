@@ -23,6 +23,9 @@ const getAllUsers = (req, res) => {
 //Получение пользователя по ID
 const getUserById = (req, res) => {
   userModel.findById(req.params.userId)
+    .orFail(() => {
+      throw new Error('NotFoundError');
+    })
     .then((user) => res.status(HTTP_STATUS_OK).send(user))
     .catch((err) => {
       if (err.message === 'NotFoundError') {
@@ -60,8 +63,11 @@ const updateUserById = (req, res) => {
   userModel.findByIdAndUpdate(
     req.user._id,
     { name, about },
-    { new: true }
+    { new: true, runValidators: true }
   )
+    .orFail(() => {
+      throw new Error('NotFoundError');
+    })
     .then((user) => res.status(HTTP_STATUS_OK).send(user))
     .catch((err) => {
       if (err.message === 'NotFoundError') {
@@ -84,8 +90,11 @@ const updateUserAvatar = (req, res) => {
   userModel.findByIdAndUpdate(
     req.user._id,
     { avatar },
-    { new: true }
+    { new: true, runValidators: true }
   )
+    .orFail(() => {
+      throw new Error('NotFoundError');
+    })
     .then((user) => res.status(HTTP_STATUS_OK).send(user))
     .catch((err) => {
       if (err.message === 'NotFoundError') {

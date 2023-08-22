@@ -39,6 +39,9 @@ const createCard = (req, res) => {
 //Удаление карточки
 const deleteCard = (req, res) => {
   cardModel.findByIdAndRemove(req.params.cardId)
+    .orFail(() => {
+      throw new Error('NotFoundError');
+    })
     .then(() => res.status(HTTP_STATUS_OK).send({ message: 'Карточка удалена' }))
     .catch((err) => {
       if (err.message === 'NotFoundError') {
@@ -62,6 +65,9 @@ const putLikeCard = (req, res) => {
     { $addToSet: { likes: req.user._id } },
     { new: true },
   )
+    .orFail(() => {
+      throw new Error('NotFoundError');
+    })
     .then((newCard) => res.status(HTTP_STATUS_OK).send(newCard))
     .catch((err) => {
       if (err.message === 'NotFoundError') {
@@ -85,6 +91,9 @@ const deleteLikeCard = (req, res) => {
     { $pull: { likes: req.user._id } },
     { new: true },
   )
+    .orFail(() => {
+      throw new Error('NotFoundError');
+    })
     .then((newCard) => res.status(HTTP_STATUS_OK).send(newCard))
     .catch((err) => {
       if (err.message === 'NotFoundError') {
