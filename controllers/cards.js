@@ -41,7 +41,7 @@ const deleteCard = (req, res) => {
   cardModel.findByIdAndRemove(req.params.cardId)
     .then(() => res.status(HTTP_STATUS_OK).send({ message: 'Карточка удалена' }))
     .catch((err) => {
-      if (err instanceof mongoose.Error.DocumentNotFoundError /*err.message === 'NotFoundError'*/) {
+      if (err.message === 'NotFoundError') {
         return res.status(HTTP_STATUS_NOT_FOUND).send({
           message: 'Карточки с указанным _id не существует',
         });
@@ -64,7 +64,7 @@ const putLikeCard = (req, res) => {
   )
     .then((newCard) => res.status(HTTP_STATUS_OK).send(newCard))
     .catch((err) => {
-      if (err instanceof mongoose.Error.DocumentNotFoundError /*err.message === 'NotFoundError'*/) {
+      if (err.message === 'NotFoundError') {
         return res.status(HTTP_STATUS_NOT_FOUND).send({
           message: 'Карточки с указанным _id не существует',
         });
@@ -87,7 +87,7 @@ const deleteLikeCard = (req, res) => {
   )
     .then((newCard) => res.status(HTTP_STATUS_OK).send(newCard))
     .catch((err) => {
-      if (err instanceof mongoose.Error.DocumentNotFoundError /*err.message === 'NotFoundError'*/) {
+      if (err.message === 'NotFoundError') {
         return res.status(HTTP_STATUS_NOT_FOUND).send({
           message: 'Карточки с указанным _id не существует',
         });

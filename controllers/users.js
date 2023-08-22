@@ -25,7 +25,7 @@ const getUserById = (req, res) => {
   userModel.findById(req.params.userId)
     .then((user) => res.status(HTTP_STATUS_OK).send(user))
     .catch((err) => {
-      if (err instanceof mongoose.Error.DocumentNotFoundError /*err.message === 'NotFoundError'*/) {
+      if (err.message === 'NotFoundError') {
         return res.status(HTTP_STATUS_NOT_FOUND).send({
           message: 'Пользователя с указанным _id не существует',
         });
@@ -64,7 +64,7 @@ const updateUserById = (req, res) => {
   )
     .then((user) => res.status(HTTP_STATUS_OK).send(user))
     .catch((err) => {
-      if (err instanceof mongoose.Error.DocumentNotFoundError /*err.message === 'NotFoundError'*/) {
+      if (err.message === 'NotFoundError') {
         return res.status(HTTP_STATUS_NOT_FOUND).send({
           message: 'Пользователя с указанным _id не существует',
         });
@@ -88,7 +88,7 @@ const updateUserAvatar = (req, res) => {
   )
     .then((user) => res.status(HTTP_STATUS_OK).send(user))
     .catch((err) => {
-      if (err instanceof mongoose.Error.DocumentNotFoundError /*err.message === 'NotFoundError'*/) {
+      if (err.message === 'NotFoundError') {
         return res.status(HTTP_STATUS_NOT_FOUND).send({
           message: 'Пользователя с указанным _id не существует',
         });
