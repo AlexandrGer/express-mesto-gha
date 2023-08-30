@@ -1,15 +1,15 @@
 const mongoose = require('mongoose');
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
+const {
+  HTTP_STATUS_OK,
+  HTTP_STATUS_CREATED,
+} = require('http2').constants;
 const userModel = require('../models/user');
 const NotFoundError = require('../errors/NotFoundError');
 const BadRequestError = require('../errors/BadRequestError');
 const ConflictError = require('../errors/ConflictError');
 const SECRET_KEY = require('../utils/constants');
-const {
-  HTTP_STATUS_OK,
-  HTTP_STATUS_CREATED
-} = require('http2').constants;
 
 // Получение всех пользователей
 const getAllUsers = (req, res, next) => {
