@@ -30,7 +30,7 @@ const createCard = (req, res) => {
     .catch((err) => {
       if (err instanceof mongoose.Error.ValidationError) {
         res.status(HTTP_STATUS_BAD_REQUEST).send({
-          message: 'Переданы некорректные данные.',
+          message: err.message,
         });
         return;
       }
