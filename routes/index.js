@@ -6,7 +6,7 @@ const cardsRoutes = require('./cards');
 
 router.use('/users', usersRoutes);
 router.use('/cards', cardsRoutes);
-routes.all('/*', (req, res, next) => {
+router.all('/*', (req, res, next) => {
   next(new NotFoundError('Неверный адрес запроса'));
 });
 

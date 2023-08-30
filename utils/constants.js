@@ -4,5 +4,5 @@ const URL_REG = /https?:\/\/(www\.)?[-a-zA-Z0-9@:%._+~#=]{1,256}\.[a-zA-Z0-9()]{
 
 module.exports = {
   SECRET_KEY,
-  URL_REG
+  URL_REG,
 };

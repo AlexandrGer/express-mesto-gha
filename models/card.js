@@ -1,7 +1,5 @@
 const mongoose = require('mongoose');
-const validator = require('validator');
 const URL_REG = require('../utils/constants');
-
 
 const cardSchema = new mongoose.Schema({
   name: {
@@ -16,7 +14,7 @@ const cardSchema = new mongoose.Schema({
     validate: {
       validator: (url) => URL_REG.test(url),
       message: 'Неверно указан URL',
-    }
+    },
   },
   owner: {
     type: mongoose.Schema.Types.ObjectId,
