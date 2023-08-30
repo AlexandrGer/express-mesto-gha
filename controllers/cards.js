@@ -41,7 +41,7 @@ const deleteCard = (req, res, next) => {
       return res.status(HTTP_STATUS_OK).send({ message: 'Карточка удалена' });
     })
     .catch((err) => {
-      if (err instanceof mongoose.Error.DocumentNotFoundError) {
+      if (err.message === 'NotFoundError') {
         next(new NotFoundError('Карточки с указанным _id не существует'));
       } else if (err instanceof mongoose.Error.CastError) {
         next(new BadRequestError('Переданы некорректные данные'));
