@@ -49,20 +49,6 @@ const deleteCard = (req, res, next) => {
         next(err);
       }
     });
-  // .then(() => res.status(HTTP_STATUS_OK).send({ message: 'Карточка удалена' }))
-  // .catch((err) => {
-  //   if (err.message === 'NotFoundError') {
-  //     res.status(HTTP_STATUS_NOT_FOUND).send({
-  //       message: 'Карточки с указанным _id не существует',
-  //     });
-  //   } else if (err instanceof mongoose.Error.CastError) {
-  //     res.status(HTTP_STATUS_BAD_REQUEST).send({
-  //       message: 'Переданы некорректные данные.',
-  //     });
-  //   } else {
-  //     handleServerError(err, res);
-  //   }
-  // });
 };
 
 // Поставить лайк карточке
@@ -72,15 +58,11 @@ const putLikeCard = (req, res, next) => {
     { $addToSet: { likes: req.user._id } },
     { new: true },
   )
-    // .then((newCard) => res.status(HTTP_STATUS_OK).send(newCard))
     .then((newCard) => {
       if (newCard) return res.status(HTTP_STATUS_OK).send(newCard);
       throw new NotFoundError('Карточки с указанным _id не существует');
     })
     .catch((err) => {
-      // if (err instanceof mongoose.Error.DocumentNotFoundError) {
-      //   next(new NotFoundError('Карточки с указанным _id не существует'));
-      // }
       if (err instanceof mongoose.Error.CastError) {
         next(new BadRequestError('Переданы некорректные данные'));
       } else {
@@ -96,15 +78,11 @@ const deleteLikeCard = (req, res, next) => {
     { $pull: { likes: req.user._id } },
     { new: true },
   )
-    // .then((newCard) => res.status(HTTP_STATUS_OK).send(newCard))
     .then((newCard) => {
       if (newCard) return res.status(HTTP_STATUS_OK).send(newCard);
       throw new NotFoundError('Карточки с указанным _id не существует');
     })
     .catch((err) => {
-      // if (err instanceof mongoose.Error.DocumentNotFoundError) {
-      //   next(new NotFoundError('Карточки с указанным _id не существует'));
-      // }
       if (err instanceof mongoose.Error.CastError) {
         next(new BadRequestError('Переданы некорректные данные'));
       } else {
