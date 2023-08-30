@@ -33,14 +33,12 @@ const createCard = (req, res, next) => {
 // Удаление карточки
 const deleteCard = (req, res, next) => {
   const { cardId } = req.params;
-  const userId = req.user._id;
-  cardModel.findByIdAndRemove(req.params.cardId)
-    .then(() => {
-      if (cardId !== userId) {
+  cardModel.findByIdAndRemove(cardId)
+    .then((card) => {
+      if (!card.owner.equals(req.user._id)) {
         throw (new ForbiddenError('Нельзя удалить чужую карточку'));
-      } else {
-        res.status(HTTP_STATUS_OK).send({ message: 'Карточка удалена' });
       }
+      return res.status(HTTP_STATUS_OK).send({ message: 'Карточка удалена' });
     })
     .catch((err) => {
       if (err instanceof mongoose.Error.DocumentNotFoundError) {
@@ -93,9 +91,6 @@ const deleteLikeCard = (req, res, next) => {
     { $pull: { likes: req.user._id } },
     { new: true },
   )
-    .orFail(() => {
-      throw new Error('NotFoundError');
-    })
     .then((newCard) => res.status(HTTP_STATUS_OK).send(newCard))
     .catch((err) => {
       if (err instanceof mongoose.Error.DocumentNotFoundError) {
