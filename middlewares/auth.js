@@ -9,7 +9,7 @@ module.exports = (req, res, next) => {
     return next(new UnauthorizedError('Неправильные email или пароль'));
   }
 
-  const token = authorization.replace('Bearer', '');
+  const token = authorization.replace('Bearer ', '');
   let payload;
 
   try {

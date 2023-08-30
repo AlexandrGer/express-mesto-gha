@@ -70,14 +70,14 @@ const createUser = (req, res, next) => {
     }))
     .then((user) => {
       const { _id } = user;
-      res.status(HTTP_STATUS_CREATED).
-        send({
+      res.status(HTTP_STATUS_CREATED)
+        .send({
           email,
           name,
           about,
           avatar,
           _id,
-        })
+        });
     })
     .catch((err) => {
       if (err.code === 11000) {
@@ -95,9 +95,11 @@ const loginUser = (req, res, next) => {
   const { email, password } = req.body;
   userModel.findUserByCredentials(email, password)
     .then((user) => {
-      const token = jwt.sign({ _id: user._id },
+      const token = jwt.sign(
+        { _id: user._id },
         SECRET_KEY,
-        { expiresIn: '7d' });
+        { expiresIn: '7d' },
+      );
       res.status(HTTP_STATUS_OK).send({ token });
     })
     .catch(next);
