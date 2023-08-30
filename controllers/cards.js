@@ -36,7 +36,7 @@ const deleteCard = (req, res, next) => {
   cardModel.findByIdAndRemove(cardId)
     .then((card) => {
       if (!card.owner.equals(req.user._id)) {
-        throw (new ForbiddenError('Нельзя удалить чужую карточку'));
+        throw new ForbiddenError('Нельзя удалить чужую карточку');
       }
       return res.status(HTTP_STATUS_OK).send({ message: 'Карточка удалена' });
     })
@@ -72,11 +72,16 @@ const putLikeCard = (req, res, next) => {
     { $addToSet: { likes: req.user._id } },
     { new: true },
   )
-    .then((newCard) => res.status(HTTP_STATUS_OK).send(newCard))
+    // .then((newCard) => res.status(HTTP_STATUS_OK).send(newCard))
+    .then((newCard) => {
+      if (newCard) return res.status(HTTP_STATUS_OK).send(newCard);
+      throw new NotFoundError('Карточки с указанным _id не существует');
+    })
     .catch((err) => {
-      if (err instanceof mongoose.Error.DocumentNotFoundError) {
-        next(new NotFoundError('Карточки с указанным _id не существует'));
-      } else if (err instanceof mongoose.Error.CastError) {
+      // if (err instanceof mongoose.Error.DocumentNotFoundError) {
+      //   next(new NotFoundError('Карточки с указанным _id не существует'));
+      // }
+      if (err instanceof mongoose.Error.CastError) {
         next(new BadRequestError('Переданы некорректные данные'));
       } else {
         next(err);
@@ -91,11 +96,16 @@ const deleteLikeCard = (req, res, next) => {
     { $pull: { likes: req.user._id } },
     { new: true },
   )
-    .then((newCard) => res.status(HTTP_STATUS_OK).send(newCard))
+    // .then((newCard) => res.status(HTTP_STATUS_OK).send(newCard))
+    .then((newCard) => {
+      if (newCard) return res.status(HTTP_STATUS_OK).send(newCard);
+      throw new NotFoundError('Карточки с указанным _id не существует');
+    })
     .catch((err) => {
-      if (err instanceof mongoose.Error.DocumentNotFoundError) {
-        next(new NotFoundError('Карточки с указанным _id не существует'));
-      } else if (err instanceof mongoose.Error.CastError) {
+      // if (err instanceof mongoose.Error.DocumentNotFoundError) {
+      //   next(new NotFoundError('Карточки с указанным _id не существует'));
+      // }
+      if (err instanceof mongoose.Error.CastError) {
         next(new BadRequestError('Переданы некорректные данные'));
       } else {
         next(err);
