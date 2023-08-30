@@ -9,7 +9,7 @@ const userModel = require('../models/user');
 const NotFoundError = require('../errors/NotFoundError');
 const BadRequestError = require('../errors/BadRequestError');
 const ConflictError = require('../errors/ConflictError');
-const SECRET_KEY = require('../utils/constants');
+const { SECRET_KEY } = require('../utils/constants');
 
 // Получение всех пользователей
 const getAllUsers = (req, res, next) => {
@@ -68,12 +68,22 @@ const createUser = (req, res, next) => {
       about,
       avatar,
     }))
-    .then((user) => res.status(HTTP_STATUS_CREATED).send(user))
+    .then((user) => {
+      const { _id } = user;
+      res.status(HTTP_STATUS_CREATED).
+        send({
+          email,
+          name,
+          about,
+          avatar,
+          _id,
+        })
+    })
     .catch((err) => {
       if (err.code === 11000) {
         next(new ConflictError('Пользователь с таким электронным адресом уже зарегистрирован'));
       } else if (err instanceof mongoose.Error.ValidationError) {
-        next(new BadRequestError(err.message));
+        next(new BadRequestError('Переданы некорректные данные'));
       } else {
         next(err);
       }
@@ -85,8 +95,10 @@ const loginUser = (req, res, next) => {
   const { email, password } = req.body;
   userModel.findUserByCredentials(email, password)
     .then((user) => {
-      const token = jwt.sign({ _id: user._id }, SECRET_KEY, { expiresIn: '7d' });
-      res.send({ token });
+      const token = jwt.sign({ _id: user._id },
+        SECRET_KEY,
+        { expiresIn: '7d' });
+      res.status(HTTP_STATUS_OK).send({ token });
     })
     .catch(next);
 };
