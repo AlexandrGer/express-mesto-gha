@@ -1,6 +1,10 @@
 const express = require('express');
 const mongoose = require('mongoose');
 const router = require('./routes/index');
+const routerAuth = require('./routes/auth');
+const auth = require('./middlewares/auth');
+const { errors } = require('celebrate');
+const handleError = require('./errors/handleError');
 
 const {
   PORT = 3000,
@@ -24,7 +28,14 @@ app.use((req, res, next) => {
   next();
 });
 
+app.use('/', routerAuth);
+
+app.use(auth);
+
 app.use(router);
+
+app.use(errors());
+app.use(handleError);
 
 app.listen(PORT, () => {
   console.log(`Server is running on port ${PORT}`);
