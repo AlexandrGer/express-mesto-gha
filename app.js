@@ -20,14 +20,6 @@ const app = express();
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
-app.use((req, res, next) => {
-  req.user = {
-    _id: '64e49fe91cdce86fcdcd6e96',
-  };
-
-  next();
-});
-
 app.use('/', routerAuth);
 
 app.use(auth);
