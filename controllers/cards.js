@@ -31,36 +31,19 @@ const createCard = (req, res, next) => {
 };
 
 // Удаление карточки
-// const deleteCard = (req, res, next) => {
-//   const { cardId } = req.params;
-//   cardModel.findByIdAndRemove(cardId)
-//     .then((card) => {
-//       if (!card) {
-//         throw new NotFoundError('Карточки с указанным _id не существует');
-//       } else if (!card.owner.equals(req.user._id)) {
-//         throw new ForbiddenError('Нельзя удалить чужую карточку');
-//       }
-//       return res.status(HTTP_STATUS_OK).send({ message: 'Карточка удалена' });
-//     })
-//     .catch((err) => {
-//       if (err instanceof mongoose.Error.CastError) {
-//         next(new BadRequestError('Переданы некорректные данные'));
-//       } else {
-//         next(err);
-//       }
-//     });
-// };
-
 const deleteCard = (req, res, next) => {
   const { cardId } = req.params;
   cardModel.findById(cardId)
     .then((card) => {
-      if (!card) throw new NotFoundError('Карточки с указанным _id не существует');
-      if (!card.owner.equals(req.user._id)) throw new ForbiddenError('Нельзя удалить чужую карточку');
-      cardModel.deleteOne(card).then(() => {
-        res.status(HTTP_STATUS_OK).send({ message: 'Карточка удалена' });
-      });
+      if (!card) {
+        throw new NotFoundError('Карточки с указанным _id не существует');
+      }
+      if (!card.owner.equals(req.user._id)) {
+        throw new ForbiddenError('Нельзя удалить чужую карточку');
+      }
+      return cardModel.deleteOne(card);
     })
+    .then((card) => res.status(HTTP_STATUS_OK).send(card))
     .catch((err) => {
       if (err instanceof mongoose.Error.CastError) {
         next(new BadRequestError('Переданы некорректные данные'));
